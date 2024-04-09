@@ -21,13 +21,13 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build
-    - name: Download a Build Artifact
-      uses: actions/download-artifact@v4.1.4
-    - uses: sparkfabrik/android-build-action@v1.5.0
-      with:
-        project-path: android
-        output-path: my-app.apk
-        browserstack-upload: false
-        bundler-version: "1.0.0"
-        fastlane-env: "debug"
-                  
+    - name: Build Debug APK
+      run: ./gradlew assembleDebug
+    - name: Generate version.txt for Hub release
+      run: ./gradlew generateVersionTxt
+    - name: Releasing using Hub
+      uses: valley-fordham/action-release-debugapk@master
+      env:
+       GITHUB_TOKEN: ${{ secrets.TOKEN }}
+       APP_FOLDER: app
+       RELEASE_TITLE: New Build
